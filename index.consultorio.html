@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Painel do Consultório — Clínica Vozz</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#F5F6FB;
+  --card:#FFFFFF;
+  --ink:#242B45;
+  --muted:#6B7280;
+  --line:#E6E8F0;
+  --brand:#5B6FE6;
+  --brand-light:#E9EAFC;
+  --amber:#DE9B41;
+  --amber-light:#FBF0DF;
+  --red:#D6604F;
+  --red-light:#FBE7E3;
+  --green:#3FA672;
+  --green-light:#E4F5EC;
+  --grey:#B9BFCB;
+  --grey-light:#EEF0F4;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+.page{max-width:1360px;margin:0 auto;padding:28px 32px 48px;}
+
+/* header */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
+.brand{display:flex;align-items:center;gap:12px;}
+.mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--brand),#8A96F2);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;}
+.brand h1{font-family:'Sora',sans-serif;font-size:19px;font-weight:600;margin:0;line-height:1.2;}
+.brand p{margin:0;font-size:12.5px;color:var(--muted);}
+.controls{display:flex;gap:10px;align-items:center;}
+.pill{background:var(--card);border:1px solid var(--line);padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;}
+.pill.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;}
+.kpi-label{font-size:12.5px;color:var(--muted);margin-bottom:8px;}
+.kpi-value{font-family:'Sora',sans-serif;font-size:24px;font-weight:600;}
+.delta{font-size:12px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:9px;}
+.delta.up{background:var(--green-light);color:var(--green);}
+.delta.down{background:var(--red-light);color:var(--red);}
+.delta.warn{background:var(--amber-light);color:var(--amber);}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px;}
+.card-title{font-family:'Sora',sans-serif;font-size:14.5px;font-weight:600;margin:0 0 3px;}
+.card-sub{font-size:11.5px;color:var(--muted);margin-bottom:14px;}
+
+/* layout grid */
+.grid-main{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:4px;}
+
+/* weekly agenda */
+.agenda{width:100%;border-collapse:collapse;font-size:12.3px;}
+.agenda th{text-align:center;font-weight:600;color:var(--muted);font-size:11.5px;padding:6px 4px;border-bottom:1px solid var(--line);}
+.agenda td{padding:5px;vertical-align:top;height:48px;border-bottom:1px solid var(--line);}
+.agenda .time{color:var(--muted);font-size:11px;white-space:nowrap;padding-right:8px;}
+.slot{border-radius:7px;padding:5px 7px;font-size:11.3px;font-weight:500;line-height:1.25;}
+.slot.ok{background:var(--green-light);color:#256B49;border-left:3px solid var(--green);}
+.slot.just{background:var(--amber-light);color:#8A5B1F;border-left:3px solid var(--amber);}
+.slot.no-just{background:var(--red-light);color:#8C3A2A;border-left:3px solid var(--red);}
+.slot.cancel{background:var(--grey-light);color:#5C6472;border-left:3px solid var(--grey);}
+.slot .st{display:block;font-size:9.8px;font-weight:600;opacity:.85;margin-top:1px;}
+.legend-row{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap;}
+.legend-row .li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
+.legend-row .sw{width:9px;height:9px;border-radius:3px;}
+
+/* alert list */
+.alert-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);}
+.alert-item:last-child{border-bottom:none;}
+.alert-name{font-size:12.8px;font-weight:600;}
+.alert-meta{font-size:11px;color:var(--muted);}
+.alert-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.alert-badge.red{background:var(--red-light);color:var(--red);}
+.alert-badge.amber{background:var(--amber-light);color:var(--amber);}
+.alert-badge.green{background:var(--green-light);color:var(--green);}
+
+/* fiscal table */
+.tbl{width:100%;border-collapse:collapse;font-size:12.3px;}
+.tbl th{text-align:left;font-size:11px;color:var(--muted);font-weight:600;padding:6px 4px;border-bottom:1px solid var(--line);}
+.tbl td{padding:8px 4px;border-bottom:1px solid var(--line);}
+.tbl tr:last-child td{border-bottom:none;}
+.status-tag{font-size:10.8px;font-weight:600;padding:3px 9px;border-radius:20px;}
+.status-tag.pending{background:var(--amber-light);color:var(--amber);}
+.status-tag.done{background:var(--green-light);color:var(--green);}
+
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+
+/* cash flow */
+.cash-row{display:flex;justify-content:space-between;padding:7px 0;font-size:12.5px;border-bottom:1px dashed var(--line);}
+.cash-row:last-child{border-bottom:none;font-weight:700;padding-top:10px;}
+.cash-in{color:var(--green);}
+.cash-out{color:var(--red);}
+
+/* charts row */
+.chart-row{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
+.bars{display:flex;align-items:flex-end;gap:10px;height:96px;margin-top:8px;}
+.bars .grp{flex:1;display:flex;gap:3px;align-items:flex-end;height:100%;}
+.bars .bfat{flex:1;background:var(--brand);border-radius:4px 4px 0 0;}
+.bars .bdes{flex:1;background:var(--red-light);border:1px solid var(--red);opacity:.55;border-radius:4px 4px 0 0;}
+.bar-labels{display:flex;gap:10px;margin-top:6px;}
+.bar-labels span{flex:1;text-align:center;font-size:10px;color:var(--muted);}
+.chart-legend{display:flex;gap:16px;margin-top:10px;}
+.chart-legend .li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
+
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;}
+.gauge-num{font-family:'Sora',sans-serif;font-size:28px;font-weight:700;margin-top:8px;}
+.gauge-cap{font-size:11.5px;color:var(--muted);text-align:center;margin-top:2px;}
+
+.foot-note{text-align:center;font-size:11px;color:var(--muted);margin-top:26px;}
+
+@media (max-width:1000px){
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+  .grid-main{grid-template-columns:1fr;}
+  .three-col{grid-template-columns:1fr;}
+  .chart-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">CV</div>
+      <div>
+        <h1>Painel do Consultório — Clínica Vozz</h1>
+        <p>Agenda · Faturamento · Fiscal · Fluxo de caixa</p>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="pill">Ano 2026</div>
+      <div class="pill active">Setembro / 2026</div>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-label">Faturamento bruto</div>
+      <div class="kpi-value">R$ 8.420</div>
+      <div class="delta up">▲ 6% vs mês anterior</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Despesas operacionais</div>
+      <div class="kpi-value">R$ 2.150</div>
+      <div class="delta warn">Aluguel, CRP, materiais</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Lucro líquido</div>
+      <div class="kpi-value">R$ 6.270</div>
+      <div class="delta up">Margem de 74%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Taxa de faltas</div>
+      <div class="kpi-value">8,3%</div>
+      <div class="delta warn">3 faltas sem justificativa</div>
+    </div>
+  </div>
+
+  <!-- AGENDA + ALERTAS LIMINAR -->
+  <div class="grid-main">
+    <div class="card">
+      <div class="card-title">Agenda da semana</div>
+      <div class="card-sub">08 a 12 de setembro · clique numa célula na planilha real para atualizar o status</div>
+      <table class="agenda">
+        <tr><th></th><th>Seg</th><th>Ter</th><th>Qua</th><th>Qui</th><th>Sex</th></tr>
+        <tr>
+          <td class="time">08:00</td>
+          <td><div class="slot ok">João P.<span class="st">Realizado</span></div></td>
+          <td></td>
+          <td><div class="slot ok">Marina S.<span class="st">Realizado</span></div></td>
+          <td></td>
+          <td><div class="slot just">Pedro A.<span class="st">Falta justificada</span></div></td>
+        </tr>
+        <tr>
+          <td class="time">09:00</td>
+          <td><div class="slot ok">Ana Clara<span class="st">Realizado</span></div></td>
+          <td><div class="slot ok">João P.<span class="st">Realizado</span></div></td>
+          <td></td>
+          <td><div class="slot ok">Marina S.<span class="st">Realizado</span></div></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="time">10:00</td>
+          <td></td>
+          <td><div class="slot no-just">Bento L.<span class="st">Falta s/ justificativa</span></div></td>
+          <td><div class="slot ok">Ana Clara<span class="st">Realizado</span></div></td>
+          <td></td>
+          <td><div class="slot ok">João P.<span class="st">Realizado</span></div></td>
+        </tr>
+        <tr>
+          <td class="time">14:00</td>
+          <td><div class="slot ok">Marina S.<span class="st">Realizado</span></div></td>
+          <td></td>
+          <td><div class="slot cancel">Pedro A.<span class="st">Desmarcado</span></div></td>
+          <td><div class="slot ok">Bento L.<span class="st">Realizado</span></div></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="time">15:00</td>
+          <td></td>
+          <td><div class="slot ok">Ana Clara<span class="st">Realizado</span></div></td>
+          <td></td>
+          <td><div class="slot ok">João P.<span class="st">Realizado</span></div></td>
+          <td><div class="slot ok">Marina S.<span class="st">Realizado</span></div></td>
+        </tr>
+      </table>
+      <div class="legend-row">
+        <div class="li"><span class="sw" style="background:var(--green)"></span>Realizado</div>
+        <div class="li"><span class="sw" style="background:var(--amber)"></span>Falta justificada</div>
+        <div class="li"><span class="sw" style="background:var(--red)"></span>Falta sem justificativa</div>
+        <div class="li"><span class="sw" style="background:var(--grey)"></span>Desmarcado</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Pacientes por liminar</div>
+      <div class="card-sub">Sessões contratadas x realizadas — alerta abaixo de 4 restantes</div>
+      <div class="alert-item">
+        <div><div class="alert-name">João P.</div><div class="alert-meta">10 contratadas · 9 realizadas</div></div>
+        <div class="alert-badge red">1 restante</div>
+      </div>
+      <div class="alert-item">
+        <div><div class="alert-name">Pedro A.</div><div class="alert-meta">12 contratadas · 9 realizadas</div></div>
+        <div class="alert-badge amber">3 restantes</div>
+      </div>
+      <div class="alert-item">
+        <div><div class="alert-name">Marina S.</div><div class="alert-meta">16 contratadas · 13 realizadas</div></div>
+        <div class="alert-badge amber">3 restantes</div>
+      </div>
+      <div class="alert-item">
+        <div><div class="alert-name">Bento L.</div><div class="alert-meta">20 contratadas · 15 realizadas</div></div>
+        <div class="alert-badge green">5 restantes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTICULARES / PARCEIRA / CAIXA -->
+  <div class="three-col">
+    <div class="card">
+      <div class="card-title">Particulares (sublocação)</div>
+      <div class="card-sub">Dedução automática do custo de sala</div>
+      <table class="tbl">
+        <tr><th>Paciente</th><th>Líquido</th><th>NF</th></tr>
+        <tr><td>Ana Clara</td><td>R$ 420</td><td><span class="status-tag pending">Pendente</span></td></tr>
+        <tr><td>Bento L.</td><td>R$ 630</td><td><span class="status-tag pending">Pendente</span></td></tr>
+        <tr><td>João P.</td><td>R$ 378</td><td><span class="status-tag done">Emitida</span></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Clínica parceira</div>
+      <div class="card-sub">Repasses a receber · CNPJ Clínica Vozz Parceria</div>
+      <table class="tbl">
+        <tr><th>Paciente</th><th>Repasse</th><th>NF</th></tr>
+        <tr><td>Marina S.</td><td>R$ 520</td><td><span class="status-tag pending">Pendente</span></td></tr>
+        <tr><td>Pedro A.</td><td>R$ 390</td><td><span class="status-tag pending">Pendente</span></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Fluxo de caixa</div>
+      <div class="card-sub">Setembro / 2026</div>
+      <div class="cash-row"><span>Entradas (agenda)</span><span class="cash-in">+ R$ 8.420</span></div>
+      <div class="cash-row"><span>Aluguel</span><span class="cash-out">− R$ 1.400</span></div>
+      <div class="cash-row"><span>CRP</span><span class="cash-out">− R$ 180</span></div>
+      <div class="cash-row"><span>Materiais</span><span class="cash-out">− R$ 570</span></div>
+      <div class="cash-row"><span>Saldo do mês</span><span>R$ 6.270</span></div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-title">Faturamento x despesas — últimos 6 meses</div>
+      <div class="bars">
+        <div class="grp"><div class="bfat" style="height:68%"></div><div class="bdes" style="height:22%"></div></div>
+        <div class="grp"><div class="bfat" style="height:74%"></div><div class="bdes" style="height:20%"></div></div>
+        <div class="grp"><div class="bfat" style="height:70%"></div><div class="bdes" style="height:24%"></div></div>
+        <div class="grp"><div class="bfat" style="height:80%"></div><div class="bdes" style="height:21%"></div></div>
+        <div class="grp"><div class="bfat" style="height:90%"></div><div class="bdes" style="height:19%"></div></div>
+        <div class="grp"><div class="bfat" style="height:100%"></div><div class="bdes" style="height:25%"></div></div>
+      </div>
+      <div class="bar-labels"><span>Abr</span><span>Mai</span><span>Jun</span><span>Jul</span><span>Ago</span><span>Set</span></div>
+      <div class="chart-legend">
+        <div class="li"><span class="sw" style="background:var(--brand)"></span>Faturamento</div>
+        <div class="li"><span class="sw" style="background:var(--red-light);border:1px solid var(--red)"></span>Despesas</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Taxa de faltas do mês</div>
+      <div class="gauge-wrap">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#EEF0F4" stroke-width="12"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#DE9B41" stroke-width="12"
+            stroke-dasharray="314.16" stroke-dashoffset="288" stroke-linecap="round"
+            transform="rotate(-90 60 60)"/>
+        </svg>
+        <div class="gauge-num">8,3%</div>
+        <div class="gauge-cap">3 faltas em 36 sessões<br>agendadas no mês</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot-note">J Data — Consultoria e Business Intelligence</div>
+
+</div>
+</body>
+</html>
